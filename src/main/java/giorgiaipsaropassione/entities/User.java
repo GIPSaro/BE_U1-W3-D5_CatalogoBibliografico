@@ -9,13 +9,18 @@ import java.util.List;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String name;
+
     private String surname;
+
     private LocalDate birthday;
+
     @Column(nullable = false, unique = true)
     private long loyaltyCardNumber;
+
     @OneToMany(mappedBy = "user")
     private List<Loan> loans;
 
@@ -31,18 +36,17 @@ public class User {
     }
 
     //OVERRIDES
-
     @Override
     public String toString() {
         return "User{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", surname='" + surname + '\'' +
                 ", birthday=" + birthday +
                 ", loyaltyCardNumber=" + loyaltyCardNumber +
                 ", loans=" + loans +
                 '}';
     }
-
 
     // GETTERS
 
