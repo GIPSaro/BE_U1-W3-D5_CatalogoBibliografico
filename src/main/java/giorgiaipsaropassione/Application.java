@@ -35,6 +35,47 @@ public class Application {
         // Genera e salva dati di test
         generateTestData(ud, ld, lod);
 
+
+        // ELIMINARE TRAMITE ISBN
+
+        String isbnToDelete = "ISBN0"; // Inserisci l'ISBN che vuoi eliminare
+        ld.findAndDeleteByIsbn(isbnToDelete);
+
+        // Pulisce il contesto di persistenza
+        em.clear();
+
+
+        // RICERCA PER ISBN
+        System.out.println("Find by ISBN:");
+        System.out.println(ld.findByIsbn("ISBN0"));
+
+
+        // RICERCA TRAMITE TITOLO
+
+        System.out.println("Find by Title:");
+        System.out.println(ld.findByTitle("Paths"));
+
+
+        // RICERCA PER AUTORE
+
+        System.out.println("Find by Author:");
+        System.out.println(ld.findByAuthor("Eliseo"));
+
+        // RICERCA PER ANNO
+
+        System.out.println("Find by Year:");
+        System.out.println(ld.findByYear(2007));
+
+        // RICERCA PER TESSERA
+
+        System.out.println("Find by Card:");
+        System.out.println(ld.findByCard(95921));
+//
+//        // RICERCA PER PRESTITI SCADUTI
+//
+        System.out.println("Expired Loans:");
+        System.out.println(lod.findExpired());
+
         em.close();
         emf.close();
     }
@@ -42,6 +83,7 @@ public class Application {
     private static void generateTestData(UserDAO userDAO, LiteratureDAO literatureDAO, LoanDAO loanDAO) {
         Faker faker = new Faker();
         Random random = new Random();
+
 
         List<User> users = new ArrayList<>();
         List<Book> books = new ArrayList<>();
@@ -59,8 +101,8 @@ public class Application {
             long loyaltyCardNumber = faker.number().numberBetween(10000, 99999);
 
             User user = new User(name, surname, birthday, loyaltyCardNumber);
-            userDAO.saveUser(user);
-            users.add(user);
+//            userDAO.saveUser(user);
+//            users.add(user);
         }
 
         // Genera e salva 10 libri
@@ -74,8 +116,8 @@ public class Application {
                     faker.book().author(),
                     faker.book().genre()
             );
-            literatureDAO.saveLiterature(book);
-            books.add(book);
+//            literatureDAO.saveLiterature(book);
+//            books.add(book);
         }
 
         // Genera e salva 5 magazine
@@ -89,8 +131,8 @@ public class Application {
                     50 + i,
                     periodicity
             );
-            literatureDAO.saveLiterature(magazine);
-            magazines.add(magazine);
+//            literatureDAO.saveLiterature(magazine);
+//            magazines.add(magazine);
         }
 
         // Genera e salva prestiti
@@ -106,7 +148,7 @@ public class Application {
                     loan.setReturnDate(LocalDate.now().minusDays(random.nextInt(30) + 1));
                 }
 
-                loanDAO.saveLoan(loan);
+//                loanDAO.saveLoan(loan);
             }
         }
 

@@ -44,7 +44,7 @@ public class LiteratureDAO {
     }
 
     public List<Literature> findByYear(int year) {
-        String myQuery = "SELECT l FROM Literature l WHERE FUNCTION('YEAR', l.publicationDate) = :year";
+        String myQuery = "SELECT l FROM Literature l WHERE EXTRACT(YEAR FROM l.publicationDate) = :year";
         TypedQuery<Literature> query = em.createQuery(myQuery, Literature.class);
         query.setParameter("year", year);
         List<Literature> result = query.getResultList();
@@ -71,7 +71,7 @@ public class LiteratureDAO {
     }
 
     public List<Literature> findByCard(long card) {
-        String myQuery = "SELECT l FROM Literature l WHERE l.id IN (SELECT l.literatureOnLoan FROM Loan l WHERE l.user IN (SELECT u FROM User u WHERE u.loyaltyCardNumber = :card))";
+        String myQuery = "SELECT l FROM Literature l WHERE l.id IN (SELECT l.literatureOnLoan.id FROM Loan l WHERE l.user.loyaltyCardNumber = :card)";
         TypedQuery<Literature> query = em.createQuery(myQuery, Literature.class);
         query.setParameter("card", card);
         List<Literature> result = query.getResultList();
@@ -85,18 +85,27 @@ public class LiteratureDAO {
             EntityTransaction transaction = em.getTransaction();
             try {
                 transaction.begin();
+
+
+                String deleteLoansQuery = "DELETE FROM Loan l WHERE l.literatureOnLoan.id = :literatureId";
+                em.createQuery(deleteLoansQuery)
+                        .setParameter("literatureId", itemToRemove.getId())
+                        .executeUpdate();
+
+                // Elimina il record dalla tabella 'literature'
                 em.remove(itemToRemove);
                 transaction.commit();
-                System.out.println("Literature item successfully deleted from DB!");
-            } catch (TransactionalException tErr) {
-                System.err.println(tErr.getMessage());
+                System.out.println("Literature item with ISBN " + isbn + " successfully deleted from DB!");
+            } catch (Exception e) {
+                transaction.rollback();
+                System.err.println("Error deleting literature item with ISBN " + isbn + ": " + e.getMessage());
+                e.printStackTrace();
             }
         } else {
-            System.out.println("Literature item not found.");
+            System.out.println("Literature item with ISBN " + isbn + " not found.");
         }
     }
 
-    // NEW METHOD FOR GENERATING RANDOM LITERATURE
     public void generateRandomLiterature(int numberOfItems) {
         for (int i = 0; i < numberOfItems; i++) {
             Literature literature = new Literature();

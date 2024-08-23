@@ -40,9 +40,7 @@ public class LoanDAO {
         String myQuery = "SELECT l FROM Loan l WHERE l.scheduledReturnDate < CURRENT_DATE AND l.returnDate IS NULL";
         TypedQuery<Loan> query = em.createQuery(myQuery, Loan.class);
         List<Loan> result = query.getResultList();
-        if (result.isEmpty()) {
-            System.out.println("No expired loans were found.");
-        }
+        if (result.isEmpty()) System.out.println("No expired loans were found.");
         return result;
     }
 
