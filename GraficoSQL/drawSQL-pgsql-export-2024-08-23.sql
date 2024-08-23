@@ -48,3 +48,5 @@ ALTER TABLE
     "Prestito" ADD CONSTRAINT "prestito_numerotessera_foreign" FOREIGN KEY("NumeroTessera") REFERENCES "Utente"("NumeroTessera");
 ALTER TABLE
     "Elemento" ADD CONSTRAINT "elemento_codiceisbn_foreign" FOREIGN KEY("CodiceISBN") REFERENCES "Rivista"("CodiceISBN");
+
+
